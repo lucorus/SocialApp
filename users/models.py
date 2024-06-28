@@ -5,6 +5,7 @@ from slugify import slugify
 
 class CustomUser(AbstractUser):
     username = models.CharField(max_length=40, unique=True, blank=True, verbose_name='Имя пользователя')
+    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True, verbose_name='Аватар')
     is_banned = models.BooleanField(default=False)
     slug = models.SlugField()
 
