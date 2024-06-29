@@ -46,16 +46,21 @@ class Message(models.Model):
 @receiver(post_delete)
 def delete_related_image(instance, **kwargs):
     """При удалении фотографии группы, фото удаляется из папки"""
-    if instance.image:
-        storage, path = instance.image.storage, instance.image.path
-        storage.delete(path)
+    try:
+        if instance.image:
+            storage, path = instance.image.storage, instance.image.path
+            storage.delete(path)
+    except:
+        pass
 
 
 @receiver(pre_save, sender=Group)
 def delete_related_image_edit(sender, instance, **kwargs):
     """При обновлении фотографии группы, её старое фото удаляется из папки"""
-    if instance.id:
-        old_instance = sender.objects.filter(pk=instance.id).first()
-        if old_instance.image != instance.image:
-            old_instance.image.delete(save=False)
-
+    try:
+        if instance.id:
+            old_instance = sender.objects.filter(pk=instance.id).first()
+            if old_instance.image != instance.image:
+                old_instance.image.delete(save=False)
+    except:
+        pass

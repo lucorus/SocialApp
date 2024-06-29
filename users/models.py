@@ -27,15 +27,21 @@ class CustomUser(AbstractUser):
 @receiver(post_delete)
 def delete_related_image(instance, **kwargs):
     """При удалении аватара пользователем, он удаляется из папки"""
-    if instance.avatar:
-        storage, path = instance.avatar.storage, instance.avatar.path
-        storage.delete(path)
+    try:
+        if instance.avatar:
+            storage, path = instance.avatar.storage, instance.avatar.path
+            storage.delete(path)
+    except:
+        pass
 
 
 @receiver(pre_save, sender=CustomUser)
 def delete_related_image_edit(sender, instance, **kwargs):
     """При обновлении аватара пользователя, его старый аватар удаляется из папки"""
-    if instance.id:
-        old_instance = sender.objects.filter(pk=instance.id).first()
-        if old_instance.avatar != instance.avatar:
-            old_instance.avatar.delete(save=False)
+    try:
+        if instance.id:
+            old_instance = sender.objects.filter(pk=instance.id).first()
+            if old_instance.avatar != instance.avatar:
+                old_instance.avatar.delete(save=False)
+    except:
+        pass

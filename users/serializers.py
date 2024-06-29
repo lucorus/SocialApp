@@ -4,9 +4,18 @@ from chat.models import Group
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
+    avatar_url = serializers.SerializerMethodField()
+
+    def get_avatar_url(self, obj):
+        try:
+            return obj.avatar.url
+        except:
+            # пока что будем возвращаем None, если лого нет. в будущем можно будет заменить на аватар по умолчанию
+            return None
+
     class Meta:
         model = models.CustomUser
-        fields = ['id', 'username', 'slug', 'is_banned']
+        fields = ['id', 'username', 'slug', 'is_banned', 'avatar_url']
 
 
 class GroupSerializer(serializers.ModelSerializer):
